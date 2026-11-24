@@ -1,0 +1,74 @@
+# yaml-language-server: $schema=https://coderabbit.ai/integrations/schema.v2.json
+language: "en-US"
+enable_free_tier: true
+
+reviews:
+  profile: "chill"
+  high_level_summary: true
+  collapse_walkthrough: true
+  changed_files_summary: true
+  sequence_diagrams: false
+  poem: false
+  in_progress_fortune: false
+  review_status: true
+  review_progress: true
+  commit_status: true
+  abort_on_close: true
+
+  slop_detection:
+    enabled: true
+
+  auto_review:
+    enabled: true
+    auto_incremental_review: true
+    drafts: false
+    ignore_title_keywords:
+      - "WIP"
+      - "DO NOT MERGE"
+    ignore_usernames:
+      - "dependabot[bot]"
+    base_branches:
+      - "main"
+
+  path_filters:
+    - "!uv.lock"
+    - "!data/**"
+    - "!runs/**"
+    - "!assets/**"
+
+  path_instructions:
+    - path: "src/weatherpredv1/**"
+      instructions: |
+        - Guard against temporal and benchmark leakage: ensure training, validation, and
+          inference only consume inputs available at or before each forecast initialization
+          time, and keep verification targets out of model fitting and tuning.
+        - Check numeric stability, finiteness of exported forecasts, exact coordinate/unit
+          conventions, and atomic output writes for generated artifacts.
+    - path: "tests/**"
+      instructions: |
+        - Keep unit tests fast, deterministic, and completely offline (no live ERA5 or
+          remote network downloads).
+        - Ensure mathematical invariants and error/rejection paths are explicitly tested.
+    - path: ".github/**"
+      instructions: |
+        - Enforce least-privilege permissions, pinned action SHAs, safe PR triggers
+          (avoid untrusted pull_request_target code execution), and concurrency cancellation.
+    - path: "**/*.md"
+      instructions: |
+        - Check that CLI commands, package paths, and configuration descriptions match
+          the repository.
+
+  tools:
+    ruff:
+      enabled: true
+    actionlint:
+      enabled: true
+    gitleaks:
+      enabled: true
+    yamllint:
+      enabled: true
+    github-checks:
+      enabled: true
+
+chat:
+  auto_reply: true
